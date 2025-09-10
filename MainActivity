@@ -1,25 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+package com.example.kotlinlist
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ListView
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:text="TextView"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-</LinearLayout>
+class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
+
+    lateinit var listView: ListView
+    var list: ArrayList<Person> = ArrayList<Person>()
+
+    lateinit var builder: AlertDialog.Builder
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+
+        list.add(Person(R.drawable.anne, "Anne"))
+        list.add(Person(R.drawable.andrea, "Andrea"))
+        list.add(Person(R.drawable.barbie, "Barbie"))
+        list.add(Person(R.drawable.ella, "Ella"))
+        list.add(Person(R.drawable.janella, "Janella"))
+        list.add(Person(R.drawable.loisa, "Loisa"))
+        list.add(Person(R.drawable.maris, "Maris"))
+
+        listView = findViewById<ListView>(R.id.ListView)
+        val adapter = ItemAdapter(this, list)
+        listView.adapter = adapter
+
+        builder = AlertDialog.Builder(this)
+        builder.setTitle("Selected Person")
+        builder.setNegativeButton("Okey", null)
+
+        listView.setOnItemClickListener(this)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ListView)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    override fun onItemClick(
+        parent: AdapterView<*>?,
+        view: View?,
+        position: Int,
+        id: Long
+    ) {
+        var selectedItem = listView.getItemAtPosition(position) as Person
+        builder.setIcon(selectedItem.image)
+        builder.setMessage(selectedItem.name)
+        var dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+}
