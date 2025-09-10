@@ -1,0 +1,48 @@
+package com.example.kotlinlist
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
+
+class ItemAdapter(var context: Context, var list:ArrayList<Person>): BaseAdapter() {
+    override fun getCount(): Int {
+        return list.size
+    }
+
+    override fun getItem(position: Int): Any? {
+        return list.get(position)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getView(
+        position: Int,
+        convertView: View?,
+        parent: ViewGroup?
+    ): View? {
+        var view: View? = convertView
+        var holder: PersonHolder
+        if(view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.itemlayout, null)
+            holder = PersonHolder()
+            holder.imageview = view.findViewById<ImageView>(R.id.imageView)
+            holder.textview = view.findViewById<TextView>(R.id.textView)
+            view.setTag(holder)
+        } else holder= view.getTag() as PersonHolder
+        holder.imageview!!.setImageResource(list.get(position).image)
+        holder.textview!!.setText(list.get(position).name)
+
+        return view
+    }
+
+    private class PersonHolder() {
+        var imageview: ImageView?=null
+        var textview: TextView?=null
+    }
+}
